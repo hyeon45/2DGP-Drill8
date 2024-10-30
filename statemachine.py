@@ -1,5 +1,5 @@
 # event (상태 이벤트 종류, 실제 이벤트 값)
-from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT
+from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_a
 
 
 def space_down(e):
@@ -28,6 +28,11 @@ def left_up(e):
 
 def start_event(e):
     return e[0] == 'START'
+
+
+def a_key_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
+
 
 # 상태머신을 처리해주는 클래스
 class StateMachine:
