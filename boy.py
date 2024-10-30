@@ -1,6 +1,6 @@
 from pico2d import load_image, get_time
 
-from statemachine import right_down, left_down, right_up, left_up, start_event
+from statemachine import right_down, left_down, right_up, left_up, start_event, a_key_down
 from statemachine import StateMachine, time_out, space_down
 import math
 
@@ -73,7 +73,7 @@ class Run:
     @staticmethod
     def do(boy):
         boy.frame = (boy.frame + 1) % 8
-        boy.x += boy.dir * 3
+        boy.x += boy.dir * boy.speed
 
     @staticmethod
     def draw(boy):
@@ -83,19 +83,32 @@ class Run:
 class Auto_Run:
     @staticmethod
     def enter(boy, e):
-        pass
+
+        boy.dir = 1
+        boy.speed += 2
+        boy.scale = 2.0
+        boy.frame = 0
+        boy.start_time = get_time()
 
     @staticmethod
     def exit(boy, e):
-        pass
+        boy.speed = 3
+        boy.scale = 1
 
     @staticmethod
     def do(boy):
-        pass
+        boy.frame = (boy.frame + 1) % 8
+        boy.x += boy.dir * boy.speed
+
+        if boy.x < 50 or boy.x > 750:
+            boy.dir *= -1
+
+        if get_time() - boy.start_time > 5:
+            boy.state_machine.add_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(boy):
-        pass
+        boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y, 100 * boy.scale, 100 * boy.scale)
 
 
 class Boy:
@@ -104,14 +117,17 @@ class Boy:
         self.frame = 0
         self.dir = 0
         self.action = 3
+        self.scale = 1
+        self.speed = 3
         self.image = load_image('animation_sheet.png')
         self.state_machine = StateMachine(self) # 어떤 객체를 위한 상태 머신인지 알려줄 필요가 있음
         self.state_machine.start(Idle) # 객체를 사용한 것이 아닌 직접적으로 클래스를 사용함
         self.state_machine.set_transitions(
             {
                 Sleep: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, space_down: Idle},
-                Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle},
-                Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep}
+                Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, a_key_down: Auto_Run},
+                Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, a_key_down: Auto_Run},
+                Auto_Run: {time_out: Idle, right_down: Run, left_down: Run}
             }
         )
 
