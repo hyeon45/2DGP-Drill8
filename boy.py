@@ -83,7 +83,7 @@ class Run:
 class Auto_Run:
     @staticmethod
     def enter(boy, e):
-        boy.speed = 5
+        boy.speed = 6
         boy.scale = 2.0
         boy.frame = 0
         boy.y = 120
@@ -100,6 +100,11 @@ class Auto_Run:
         boy.speed = 3
         boy.scale = 1
         boy.y = 90
+
+        if boy.dir == 1:
+            boy.action = 3
+        elif boy.dir == -1:
+            boy.action = 2
 
     @staticmethod
     def do(boy):
