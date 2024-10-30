@@ -86,13 +86,20 @@ class Auto_Run:
         boy.speed = 5
         boy.scale = 2.0
         boy.frame = 0
+        boy.y = 120
         boy.start_time = get_time()
-        boy.action = 1 if boy.dir == 1 else 0
+        if boy.action == 3:
+            boy.dir = 1
+            boy.action = 1
+        elif boy.action == 2:
+            boy.dir = -1
+            boy.action = 0
 
     @staticmethod
     def exit(boy, e):
         boy.speed = 3
         boy.scale = 1
+        boy.y = 90
 
     @staticmethod
     def do(boy):
