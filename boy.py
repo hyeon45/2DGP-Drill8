@@ -83,12 +83,11 @@ class Run:
 class Auto_Run:
     @staticmethod
     def enter(boy, e):
-
-        boy.dir = 1
-        boy.speed += 2
+        boy.speed = 5
         boy.scale = 2.0
         boy.frame = 0
         boy.start_time = get_time()
+        boy.action = 1 if boy.dir == 1 else 0
 
     @staticmethod
     def exit(boy, e):
@@ -102,13 +101,14 @@ class Auto_Run:
 
         if boy.x < 50 or boy.x > 750:
             boy.dir *= -1
+            boy.action = 1 if boy.dir == 1 else 0
 
         if get_time() - boy.start_time > 5:
             boy.state_machine.add_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(boy):
-        boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y, 100 * boy.scale, 100 * boy.scale)
+        boy.image.clip_composite_draw(boy.frame * 100, boy.action * 100, 100, 100, 0, '', boy.x, boy.y, int(100 * boy.scale), int(100 * boy.scale))
 
 
 class Boy:
